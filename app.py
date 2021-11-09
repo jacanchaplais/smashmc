@@ -19,24 +19,10 @@ app = dash.Dash()
 
 app.layout = html.Div(
         children=[
-            visdcc.Network(id='net', options=dict(height='600px', width='100%',
-                   directed=True,
-                   # layout={
-                   #     'improvedLayout': True,
-                   #     'clusterThreshold': 150,
-                   #     'hierarchical': {
-                   #         'enabled': False,
-                   #         'levelSeparation': 150,
-                   #         'treeSpacing': 200,
-                   #         'blockShifting': True,
-                   #         'edgeMinimization': True,
-                   #         'parentCentralization': True,
-                   #         'direction': 'UD',
-                   #         'sortMethod': 'directed',
-                   #         'shakeTowards': 'roots'
-                   #         }
-                   #     }
-                   )),
+            visdcc.Network(
+                id='net',
+                options=dict(height='600px', width='100%', directed=True,)
+                ),
             html.Br(),html.Br(),
             html.Label('Provide path for data file to display:'),
             dcc.Input(id='filepath', type='text', placeholder=''),
