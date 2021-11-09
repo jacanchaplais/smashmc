@@ -16,6 +16,7 @@ from heparchy.hepmc import HepMC
 
 
 app = dash.Dash()
+server = app.server
 
 app.layout = html.Div(
         children=[
