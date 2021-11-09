@@ -7,7 +7,6 @@ Created on Tue 9 Nov 15:59:49 GMT 2021
 
 import tempfile
 import shutil
-import io
 import base64
 
 import dash
