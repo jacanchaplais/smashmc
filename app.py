@@ -5,6 +5,11 @@ Created on Tue 9 Nov 15:59:49 GMT 2021
 @author: jacanchaplais
 """
 
+import tempfile
+import shutil
+import io
+import base64
+
 import dash
 from dash import dcc
 from dash import html
@@ -25,8 +30,25 @@ app.layout = html.Div(
                 options=dict(height='600px', width='100%', directed=True,)
                 ),
             html.Br(),html.Br(),
-            html.Label('Provide path for data file to display:'),
-            dcc.Input(id='filepath', type='text', placeholder=''),
+            html.Label('Provide data file to display:'),
+            dcc.Upload(
+                id='datafile',
+                children=html.Div([
+                    'Drag and drop or ',
+                    html.A('Select files'),
+                    ]),
+                style={
+                    'width': '100%',
+                    'height': '60px',
+                    'lineHeight': '60px',
+                    'borderWidth': '1px',
+                    'borderStyle': 'dashed',
+                    'borderRadius': '5px',
+                    'textAlign': 'center',
+                    'margin': '10px'
+                    },
+                multiple=False,
+                ),
             html.Br(),html.Br(),
             html.Label('Particles in:'),
             dcc.Input(id='in-pdgs', type='text', placeholder='25'),
@@ -48,17 +70,23 @@ def sanitise_num_list(num_list):
     return num_list
 
 @app.callback(Output('net', 'data'), [
-        Input('filepath', 'value'),
-        Input('in-pdgs', 'value'),
-        Input('out-pdgs', 'value'),
-        Input('evt-num', 'value'),
-        ])
-def myfun(filepath, in_pdgs, out_pdgs, evt_num):
+              Input('datafile', 'contents'),
+              State('datafile', 'filename'),
+              Input('in-pdgs', 'value'),
+              Input('out-pdgs', 'value'),
+              Input('evt-num', 'value'),
+              ])
+def myfun(file_contents, filename, in_pdgs, out_pdgs, evt_num):
+    content_type, content_string = file_contents.split(',')
+    decoded = base64.b64decode(content_string)
+    file_buffer = tempfile.NamedTemporaryFile()
+    file_buffer.write(decoded)
     evt_num = int(evt_num)
-    with HepMC(filepath) as raw_f:
+    with HepMC(file_buffer.name) as raw_f:
         for i, event in enumerate(raw_f):
             if i > evt_num:
                 break
+    file_buffer.close()
     in_pdgs = sanitise_num_list(in_pdgs)
     out_pdgs = sanitise_num_list(out_pdgs)
     follow_pdgs = out_pdgs
