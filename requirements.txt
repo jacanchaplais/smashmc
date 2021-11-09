@@ -1,0 +1,4 @@
+git+https://github.com/jacanchaplais/heparchy.git#egg=heparchy
+git+https://github.com/jacanchaplais/colliderscope.git#egg=colliderscope
+dash>=2
+visdcc
